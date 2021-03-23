@@ -10,53 +10,26 @@ LANGUAGE_CHOICES = sorted([(item[1][0], item[0]) for item in LEXERS])
 STYLE_CHOICES = sorted([(item, item) for item in get_all_styles()])
 
 
-# class User(models.Model):
-#   user_id = models.IntegerField(primary_key=True)
-#  name = models.CharField(max_length=100)
-
-
 class Task(models.Model):
-    created = models.DateTimeField(auto_now_add=True)
-    # finished = models.DateTimeField(auto_now=True)
-
-    readonly_fields = ('created', 'finished')
-
-    title = models.CharField(max_length=100, blank=False, default='')
+    readonly_fields = ('created_at', 'finished_at')
+    created_at = models.DateTimeField(auto_now_add=True)
+    title = models.CharField(max_length=100, blank=False)
     task_finished = models.BooleanField(default=False)
     description = models.CharField(max_length=100, blank=True, default='')
-
-    choices = models.TextChoices('choices', 'programming bugfixing something')
+    choices = models.TextChoices('choices', 'programming bugfix something')
     category = models.CharField(blank=True, choices=choices.choices, max_length=120)
-    assigned = models.ForeignKey(User, on_delete=models.CASCADE, related_name='assigned_user')
+    assigned_to = models.ForeignKey(User, on_delete=models.CASCADE, related_name='assigned_user')
     created_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='created_user')
 
-    # finished = models.DateTimeField(auto_now_add=False, blank=True)
-    if task_finished is True:
-        finished = models.DateTimeField(auto_now_add=True, null=False, blank=True)
-    else:
-        finished = models.DateTimeField(null=True, blank=True)
+    finished_at = models.DateTimeField(null=True, blank=True)
 
     def save(self, *args, **kwargs):
-        # Make sure this is the first save (pk should be None) and there is no unit_price set
         if self.task_finished is True:
-            self.finished = str(datetime.now())
-            # self.finished = models.DateTimeField(null=True, blank=True)
-
-        #     self.finished = models.DateTimeField(auto_now=True, blank=True)
-        #   self.finished = models.DateTimeField(auto_now_add=True, blank=True)
-        # else:
-        #   self.finished = models.DateTimeField(null=True, blank=True)
-
-        #    self.finished=None
-        #    self.finished = models.DateTimeField(auto_now_add=False, blank=True)
-
+            self.finished_at = str(datetime.now())
         super().save(*args, **kwargs)
 
     def __str__(self):
         if self.task_finished is True:
-            return self.title + str(self.assigned) + str(self.task_finished)
+            return self.title + " " + str(self.assigned_to) + " " + str(self.task_finished)
         else:
-            return self.title + str(self.assigned) + str(self.task_finished)
-            # object.__str__(self)
-
-# Create your models here.
+            return self.title + " " + str(self.assigned_to) + " " + str(self.task_finished)
