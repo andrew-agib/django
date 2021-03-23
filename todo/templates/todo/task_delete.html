@@ -5,6 +5,8 @@
     <title>Title</title>
 </head>
 <body>
-
+{%  csrf_token %}
+<p>are you sure to delete {{task.titlel}}</p>
+<input type="submit" value="Delete"/>
 </body>
 </html>

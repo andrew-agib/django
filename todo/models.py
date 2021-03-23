@@ -1,7 +1,6 @@
-from datetime import datetime
-
 from django.contrib.auth.models import User
 from django.db import models
+from django.utils import timezone
 from pygments.lexers import get_all_lexers
 from pygments.styles import get_all_styles
 
@@ -19,13 +18,12 @@ class Task(models.Model):
     choices = models.TextChoices('choices', 'programming bugfix something')
     category = models.CharField(blank=True, choices=choices.choices, max_length=120)
     assigned_to = models.ForeignKey(User, on_delete=models.CASCADE, related_name='assigned_user')
-    created_user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='created_user')
-
+    creator = models.ForeignKey(User, on_delete=models.CASCADE, related_name='created_user')
     finished_at = models.DateTimeField(null=True, blank=True)
 
     def save(self, *args, **kwargs):
         if self.task_finished is True:
-            self.finished_at = str(datetime.now())
+            self.finished_at = str(timezone.now())
         super().save(*args, **kwargs)
 
     def __str__(self):

@@ -2,8 +2,10 @@ from django.contrib.auth.models import User
 from django.core.paginator import Paginator
 from django.http import JsonResponse
 from django.shortcuts import render
+from django.urls import reverse_lazy
 from django.views import generic
 from django.views.decorators.csrf import csrf_exempt
+from django.views.generic import DeleteView
 from rest_framework import generics
 from rest_framework import mixins
 from rest_framework.decorators import api_view
@@ -16,7 +18,7 @@ from .filters import TaskFilter
 
 
 @csrf_exempt
-def snippet_list(request):
+def tasks_get(request):
     if request.method == 'GET':
         snippets = Task.objects.all()
         serializer = TaskSerializer(snippets, many=True)
@@ -44,7 +46,7 @@ def index(request):
 
 
 @api_view(['GET', 'POST'])
-def snippet_drf(request):
+def tasks_drf(request):
     if request.method == 'GET':
         snippets = Task.objects.all()
         serializer = TaskSerializer(snippets, many=True)
@@ -77,7 +79,7 @@ def user_drf(request):
 class UserList(generic.ListView):
     model = User
     template_name = 'user_list.html'
-    paginate_by = 1
+    paginate_by = 2
 
     def get_context_data(self, *args, **kwargs):
         num_users = super().get_context_data(**kwargs)
@@ -146,8 +148,11 @@ class UserApi(mixins.ListModelMixin,
     def post(self, request, *args, **kwargs):
         return self.create(request, *args, **kwargs)
 
-    def delete(self, request, *args, **kwargs):
-        return self.delete(request, *args, **kwargs)
 
-    def put(self, request, *args, **kwargs):
-        return self.update(request, *args, **kwargs)
+class TaskDelete(DeleteView):
+    model = Task
+    slug_field = 'id'
+    slug_url_kwarg = 'id'
+    template_name = 'task_delete.html'
+    context_object_name = 'task'
+    success_url = reverse_lazy('task_api')
