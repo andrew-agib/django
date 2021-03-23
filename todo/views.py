@@ -147,7 +147,7 @@ class UserApi(mixins.ListModelMixin,
         return self.create(request, *args, **kwargs)
 
     def delete(self, request, *args, **kwargs):
-         return self.delete(request, *args, **kwargs)
+        return self.delete(request, *args, **kwargs)
 
     def put(self, request, *args, **kwargs):
-         return self.update(request, *args, **kwargs)
+        return self.update(request, *args, **kwargs)
