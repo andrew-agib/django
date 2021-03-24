@@ -18,7 +18,7 @@ class Task(models.Model):
     choices = models.TextChoices('choices', 'programming bugfix something')
     category = models.CharField(blank=True, choices=choices.choices, max_length=120)
     assigned_to = models.ForeignKey(User, on_delete=models.CASCADE, related_name='assigned_user')
-    creator = models.ForeignKey(User, on_delete=models.CASCADE, related_name='created_user')
+    creator = models.ForeignKey(User, on_delete=models.CASCADE, related_name='creator')
     finished_at = models.DateTimeField(null=True, blank=True)
 
     def save(self, *args, **kwargs):

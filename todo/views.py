@@ -33,12 +33,8 @@ def tasks_get(request):
         return JsonResponse(serializer.errors, status=400)
 
 
-def index(request):
+def filtered_tasks(request):
     num_tasks = Task.objects.filter(assigned_to=request.user)
-    field_name = 'title'
-    obj = Task.objects.first()
-    field_object = Task._meta.get_field(field_name)
-    field_value = field_object.value_from_object(obj)
     context = {
         'num_tasks': num_tasks,
     }
@@ -121,19 +117,18 @@ class TaskAPI(mixins.ListModelMixin,
         return self.create(request, *args, **kwargs)
 
 
-class Filter(generic.ListView):
+class Filter(generics.ListAPIView):
+    serializer_class = TaskSerializer
+
     def get_queryset(self):
-        return Task.objects.filter(assigned_to=self.request.user)
+        assigned_to = self.kwargs['assigned_to']
+        return Task.objects.filter(task__assigned_to=assigned_to)
 
-    model = Task
-    template_name = 'filter.html'
-    paginate_by = 3
 
-    def get_context_data(self, *args, **kwargs):
-        num_tasks = super().get_context_data(**kwargs)
-        num_tasks['filter'] = TaskFilter(self.request.GET, queryset=self.get_queryset())
-
-        return num_tasks
+def search_tasks(request):
+    task_list = Task.objects.all()
+    task_filter = TaskFilter(request.GET, queryset=task_list)
+    return render(request, 'filter.html', {'filter': task_filter})
 
 
 class UserApi(mixins.ListModelMixin,
