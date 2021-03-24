@@ -109,7 +109,7 @@ class TaskAPI(mixins.ListModelMixin,
     serializer_class = TaskSerializer
 
     def perform_create(self, serializer):
-        serializer.save(title=self.request.user)
+        serializer.save(assigned_to=self.request.user,creator=self.request.user)
 
     def get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
@@ -152,3 +152,11 @@ class TaskDelete(DeleteView):
     template_name = 'task_delete.html'
     context_object_name = 'task'
     success_url = reverse_lazy('task_api')
+
+
+class PostAssignedTask(generics.ListCreateAPIView):
+    queryset = Task.objects.all()
+    serializer_class = TaskSerializer
+
+    def perform_create(self, serializer):
+        serializer.save(assigned_to=self.request.user)

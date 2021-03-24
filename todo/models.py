@@ -27,7 +27,4 @@ class Task(models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        if self.task_finished is True:
-            return self.title + " " + str(self.assigned_to) + " " + str(self.task_finished)
-        else:
-            return self.title + " " + str(self.assigned_to) + " " + str(self.task_finished)
+        return self.title + " " + str(self.assigned_to) + " " + str(self.task_finished)

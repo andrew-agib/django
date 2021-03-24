@@ -10,6 +10,7 @@ urlpatterns = [
     path('userclasspaginated/', views.UserList.as_view()),
     path('taskclasspaginated/', views.TaskList.as_view()),
     path('taskapi/', views.TaskAPI.as_view(), name='task_api'),
+    path('taskassigned/', views.PostAssignedTask.as_view()),
     path('filter/', views.search_tasks),
     path('userapi/', views.UserApi.as_view()),
     path('taskdelete/<int:id>', views.TaskDelete.as_view(), name='task_delete'),

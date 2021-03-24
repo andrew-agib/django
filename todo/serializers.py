@@ -7,16 +7,16 @@ from todo.models import Task
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ["username"]
-        extra_kwargs = {
-            'username': {'validators': []},
-            'slug_field': 'username'
-        }
+        fields = ["username", "email", "last_name"]
 
 
 class TaskSerializer(serializers.ModelSerializer):
-    assigned_user = UserSerializer(read_only=True)
+    assigned_to = UserSerializer(read_only=True)
 
     class Meta:
         model = Task
-        fields = "__all__"
+        fields = ['title', 'assigned_to', 'description']
+
+    def perform_create(self, serializer):
+        serializer.save(assigned_to=self.request.user)
+        # fields = "__all__"
