@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 from django.core.paginator import Paginator
+from django.core.serializers import serialize
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.urls import reverse_lazy
@@ -21,8 +22,8 @@ from .filters import TaskFilter
 def tasks_get(request):
     if request.method == 'GET':
         snippets = Task.objects.all()
-        serializer = TaskSerializer(snippets, many=True)
-        return JsonResponse(serializer.data, safe=False)
+        data = serialize("json", snippets, fields=('title', 'assigned_to', 'creator', 'task_finished'))
+        return JsonResponse(data, safe=False)
 
     elif request.method == 'POST':
         data = JSONParser().parse(request)
